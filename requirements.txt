@@ -1,0 +1,3 @@
+streamlit
+langchain-groq
+langchain-core
