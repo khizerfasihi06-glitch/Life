@@ -88,19 +88,14 @@ with st.sidebar:
     st.markdown("- [Threads](https://threads.net)")
     
     st.subheader("Tech & Startup Hubs")
-    st.markdown("- [Product Hunt](https://producthunt.com)")
-    st.markdown("- [Hacker News](https://ycombinator.com)")
     st.markdown("- [GitHub](https://github.com)")
     
     st.subheader("AI Resources")
     st.markdown("- [OpenAI](https://openai.com)")
     st.markdown("- [Anthropic](https://anthropic.com)")
-    st.markdown("- [Streamlit Docs](https://streamlit.io)")
+    
 
-# ---------------------------------------------------------------------------
-# Main Layout UI
-# ---------------------------------------------------------------------------
-# Header Row
+
 img_col, title_col = st.columns(2)
 with img_col:
     try:
@@ -144,9 +139,7 @@ use_examples = st.checkbox(
     value=False,
 )
 
-# ---------------------------------------------------------------------------
-# Few-shot example loader
-# ---------------------------------------------------------------------------
+
 def load_examples(category_name: str, n: int = 2):
     path = os.path.join(os.path.dirname(__file__), "linkedin_post_dataset.json")
     if not os.path.exists(path):
@@ -166,12 +159,10 @@ def load_examples(category_name: str, n: int = 2):
 LENGTH_MAP = {
     "Short": "under 80 words",
     "Medium": "120-180 words",
-    "Long": "220-300 words",
+    "Long": "220-360 words",
 }
 
-# ---------------------------------------------------------------------------
-# LangChain prompt + chain
-# ---------------------------------------------------------------------------
+
 SYSTEM_PROMPT = (
     "You are an expert LinkedIn ghostwriter. You write authentic, engaging, "
     "human-sounding LinkedIn posts that avoid generic corporate language and "
@@ -179,7 +170,7 @@ SYSTEM_PROMPT = (
     "explanation, or surrounding quotation marks."
 )
 
-USER_PROMPT_TEMPLATE = """Write a LinkedIn, Instagram, Facebook and E book post of type '{category}'. 
+USER_PROMPT_TEMPLATE = """Write a LinkedIn, Instagram, Facebook, E book post of type and Medium website '{category}'. 
 Tone: {tone}. 
 Length: {length_desc}. 
 Language: write the ENTIRE post in {language}. 
