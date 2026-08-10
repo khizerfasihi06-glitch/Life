@@ -101,7 +101,7 @@ with st.sidebar:
 # Main Layout UI
 # ---------------------------------------------------------------------------
 # Header Row
-img_col, title_col = st.columns([1, 5])
+img_col, title_col = st.columns(2)
 with img_col:
     try:
         st.image("ChatGPT.png", width=120)
@@ -157,7 +157,7 @@ def load_examples(category_name: str, n: int = 2):
     except Exception:
         return []
     
-    slug = category_name.lower().split(" ")[0]
+    slug = category_name.lower().split(" ")
     matches = [d for d in data if slug in d.get("category", "")]
     if not matches:
         matches = data
@@ -257,7 +257,7 @@ if generate:
 # ---------------------------------------------------------------------------
 if st.session_state.history:
     st.markdown("### Generated post")
-    latest = st.session_state.history[0]  # Extracts the top string in list history
+    latest = st.session_state.history[0]  
     st.text_area("Post preview", latest, height=280, label_visibility="collapsed")
     st.download_button(
         "⬇ Download as .txt",
@@ -268,3 +268,5 @@ if st.session_state.history:
     
     if len(st.session_state.history) > 1:
         with st.expander("Previous generations"):
+            for i, past_post in enumerate(st.session_state.history[1:], start=2):
+                st.markdown(f"**Version {i}**")
