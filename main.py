@@ -170,7 +170,7 @@ SYSTEM_PROMPT = (
     "explanation, or surrounding quotation marks."
 )
 
-USER_PROMPT_TEMPLATE = """Write a LinkedIn, Instagram, Facebook, E book post of type and Medium website '{category}'. 
+USER_PROMPT_TEMPLATE = """Write a LinkedIn, Instagram, Facebook, E book post of type,Medium website, Fiver Gigs, upwork, Freelancer, and youtube post '{category}'. 
 Tone: {tone}. 
 Length: {length_desc}. 
 Language: write the ENTIRE post in {language}. 
