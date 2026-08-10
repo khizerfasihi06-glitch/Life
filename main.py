@@ -257,7 +257,7 @@ if generate:
 # ---------------------------------------------------------------------------
 if st.session_state.history:
     st.markdown("### Generated post")
-    latest = st.session_state.history[0]  # Safely grabs the newest generation
+    latest = st.session_state.history[0]  # Extracts the top string in list history
     st.text_area("Post preview", latest, height=280, label_visibility="collapsed")
     st.download_button(
         "⬇ Download as .txt",
@@ -268,4 +268,3 @@ if st.session_state.history:
     
     if len(st.session_state.history) > 1:
         with st.expander("Previous generations"):
-            for i, past_post in enumerate(st.session_state.history[1:], start=2):
