@@ -37,7 +37,7 @@ CATEGORIES = [
     "Event invitation", "Webinar announcement",
     # Business & Product
     "Product launch", "Startup journey update", "Funding round announcement", 
-    "Case study / client success", "Behind-the-scenes look"
+    "Case study / client success", "Behind-the-scenes look", "about news update post on media"
 ]
 
 TONES = [
