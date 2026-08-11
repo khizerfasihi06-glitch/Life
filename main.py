@@ -18,16 +18,6 @@ st.set_page_config(
     page_icon="🚀",
     layout="wide",
 )
-hide_streamlit_badge = """
-<style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-.stDeployButton {display:none;}
-div[data-testid="stStatusWidget"] {visibility: hidden;}
-</style>
-"""
-st.markdown(hide_streamlit_badge, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
