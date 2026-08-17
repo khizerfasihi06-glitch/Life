@@ -1,8 +1,3 @@
-"""
-LinkedIn Post Generator — powered by LangChain + Groq
-Run with: streamlit run app.py
-"""
-
 import os
 import json
 import streamlit as st
@@ -19,23 +14,17 @@ st.set_page_config(
     layout="wide",
 )
 
-
 # ---------------------------------------------------------------------------
 # Expanded Option Lists
 # ---------------------------------------------------------------------------
 CATEGORIES = [
-    # Professional Updates
     "New job announcement", "Work anniversary", "Achievement / milestone", 
     "Promotion", "Hiring announcement", "Company layoff response",
-    # Thought Leadership & Insights
     "Thought leadership", "Lessons learned / failure story", "Industry trends analysis",
     "Tips / advice", "Book / article review", "Myth busting",
-    # Education & Personal Growth
     "Certification completed", "Graduation", "Course recommendation", "Personal transformation",
-    # Events & Networking
     "Conference / event recap", "Team appreciation", "Networking / gratitude", 
     "Event invitation", "Webinar announcement",
-    # Business & Product
     "Product launch", "Startup journey update", "Funding round announcement", 
     "Case study / client success", "Behind-the-scenes look", "about news update post on media"
 ]
@@ -50,6 +39,12 @@ LANGUAGES = [
     "English", "Urdu", "Roman Urdu (Urdu written in English letters)", "Arabic", 
     "Spanish", "French", "Hindi", "German", "Portuguese", "Turkish", 
     "Indonesia", "Russian", "Persian",
+]
+
+WEBSITE = [
+    "Linkedin", "Facebook", "Instagram", "Youtube", "X (Twitter)", 
+    "Threads", "Tiktok", "Snapchat", "Pinterest", "Reddit", 
+    "Quora", "Discord", "Whatsapp", "Telegram"
 ]
 
 # ---------------------------------------------------------------------------
@@ -80,8 +75,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Curated External Web Resources Directory
-    st.title("🌐 Website Directory")
+    st.title(" Website Directory")
     st.subheader("Social Platforms")
     st.markdown("- [LinkedIn](https://linkedin.com)")
     st.markdown("- [Twitter / X](https://x.com)")
@@ -94,10 +88,8 @@ with st.sidebar:
     st.subheader("AI Resources")
     st.markdown("- [OpenAI](https://openai.com)")
     st.markdown("- [Anthropic](https://anthropic.com)")
-    
 
-
-img_col, title_col = st.columns(2)
+img_col, title_col = st.columns([1, 4])
 with img_col:
     try:
         st.image("ChatGPT.png", width=120)
@@ -106,16 +98,18 @@ with img_col:
 
 with title_col:
     st.title("LIF.ai")
-    st.caption("Powered by LangChain + Groq — turn a rough idea into a polished LinkedIn post, Instagram and facebook in seconds.")
+    st.caption("Powered by LangChain + Groq — turn a rough idea into a polished marketing post in seconds.")
 
 st.markdown("---")
 
-# Input Configuration Selectors
-col1, col2 = st.columns(2)
+# Input Configuration Selectors (Fixed Column matching 3 vs 3)
+col1, col2, col3 = st.columns(3)
 with col1:
     category = st.selectbox("Post type", CATEGORIES)
 with col2:
     tone = st.selectbox("Tone", TONES)
+with col3:
+    website = st.selectbox("Web platform target", WEBSITE, index=0) # Fixed typo 'seletbox'
 
 topic = st.text_area(
     "Topic — what's the post about?",
@@ -123,13 +117,13 @@ topic = st.text_area(
     height=120,
 )
 
-# Output Style Controls
-col3, col4, col5 = st.columns(3)
-with col3:
+# Output Style Controls (Fixed duplicate col3 variable naming conflicts)
+col_len, col_lang, col_opts = st.columns(3)
+with col_len:
     length = st.selectbox("Length", ["Short", "Medium", "Long"], index=1)
-with col4:
+with col_lang:
     language = st.selectbox("Language", LANGUAGES, index=0)
-with col5:
+with col_opts:
     st.write("**Formatting Toggles**")
     use_emojis = st.checkbox("Emojis", value=True)
     use_hashtags = st.checkbox("Include hashtags", value=True)
@@ -139,7 +133,6 @@ use_examples = st.checkbox(
     "Use style examples from linkedin_post_dataset.json (if present in this folder)",
     value=False,
 )
-
 
 def load_examples(category_name: str, n: int = 2):
     path = os.path.join(os.path.dirname(__file__), "linkedin_post_dataset.json")
@@ -151,8 +144,9 @@ def load_examples(category_name: str, n: int = 2):
     except Exception:
         return []
     
-    slug = category_name.lower().split(" ")
-    matches = [d for d in data if slug in d.get("category", "")]
+    # Fixed matching bug: checking flat string sub-matches safely
+    category_slug = category_name.lower()
+    matches = [d for d in data if category_slug in d.get("category", "").lower()]
     if not matches:
         matches = data
     return matches[:n]
@@ -163,24 +157,27 @@ LENGTH_MAP = {
     "Long": "220-360 words",
 }
 
-
+# Fixed: System and User prompt configurations are streamlined to reference selected platform variable 
 SYSTEM_PROMPT = (
-    "You are an expert LinkedIn ghostwriter. You write authentic, engaging, "
-    "human-sounding LinkedIn posts that avoid generic corporate language and "
-    "clickbait. Return only the finished post text, with no preamble, "
-    "explanation, or surrounding quotation marks."
+    "You are an expert copywriter and social media ghostwriter. You write authentic, engaging, "
+    "human-sounding content tailored perfectly for the requested platform. Avoid generic corporate "
+    "clichés or extreme clickbait patterns. Return ONLY the finished post text, with no preamble, "
+    "no conversational transition chat, and no surrounding quotation marks."
 )
 
-USER_PROMPT_TEMPLATE = """Write a LinkedIn, Instagram, Facebook, E book post of type,Medium website, Fiver Gigs, upwork, Freelancer, and youtube post '{category}'. 
-Tone: {tone}. 
-Length: {length_desc}. 
-Language: write the ENTIRE post in {language}. 
+USER_PROMPT_TEMPLATE = """Write an optimization-driven post specifically designed for {website}.
+Post Category Type: {category}
+Desired Tone: {tone}. 
+Target Length: {length_desc}. 
+Language Constraint: Write the ENTIRE text exclusively in {language}. 
 
-Use short paragraphs and line breaks for readability, the way real LinkedIn posts are formatted. 
-{emoji_instruction} 
-{hashtag_instruction} 
+Formatting Rules:
+- Use clean layout patterns, short paragraphs, and distinct line breaks to maximize readability.
+- {emoji_instruction} 
+- {hashtag_instruction} 
 
-Topic / idea to base the post on: {topic} 
+Core Content Context Topic:
+{topic} 
 
 {example_block}"""
 
@@ -230,35 +227,32 @@ if generate:
                 chain = build_chain(api_key, model, temperature)
                 post_text = chain.invoke(
                     {
+                        "website": website,
                         "category": category,
                         "tone": tone,
                         "length_desc": LENGTH_MAP[length],
                         "language": language,
                         "emoji_instruction": emoji_instruction,
                         "hashtag_instruction": hashtag_instruction,
-                        "topic": topic.strip(),
-                        "example_block": example_block,
+                        "topic": topic,
+                        "example_block": example_block
                     }
-                ).strip()
-                st.session_state.history.insert(0, post_text)
+                )
+                
+                # Display output window
+                st.subheader(" Generated Output")
+                st.text_area("Copy your post text:", value=post_text, height=350)
+                
+                # Append to active session history state
+                st.session_state.history.append({"platform": website, "content": post_text})
+                
         except Exception as e:
-            st.error(f"Something went wrong calling Groq via LangChain: {e}")
+            st.error(f"An error occurred during LLM text generation: {e}")
 
-# ---------------------------------------------------------------------------
-# App Generation Rendering View
-# ---------------------------------------------------------------------------
+# Render basic log list of generated posts if any exist
 if st.session_state.history:
-    st.markdown("### Generated post")
-    latest = st.session_state.history[0]  
-    st.text_area("Post preview", latest, height=280, label_visibility="collapsed")
-    st.download_button(
-        "⬇ Download as .txt",
-        data=latest,
-        file_name="linkedin_post.txt",
-        mime="text/plain",
-    )
-    
-    if len(st.session_state.history) > 1:
-        with st.expander("Previous generations"):
-            for i, past_post in enumerate(st.session_state.history[1:], start=2):
-                st.markdown(f"**Version {i}**")
+    st.markdown("---")
+    st.subheader("📚 Generation History Session Logs")
+    for idx, historical_post in enumerate(reversed(st.session_state.history)):
+        with st.expander(f"Post {len(st.session_state.history) - idx} - Platform: {historical_post['platform']}"):
+            st.code(historical_post['content'], language="text")
