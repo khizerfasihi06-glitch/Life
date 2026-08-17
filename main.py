@@ -61,15 +61,15 @@ with st.sidebar:
              "instead of pasting it here.",
     )
     
-    model = st.selectbox(
-        "Model",
-        [
-            "llama-3.3-70b-versatile",
-            "llama-3.1-8b-instant",
-            "gemma2-9b-it",
-        ],
-        index=0,
-    )
+model = st.selectbox(
+    "Model",
+    [
+        "openai/gpt-oss-120b",  # High intelligence replacement for 70B
+        "openai/gpt-oss-20b",   # Ultra-fast replacement for 8B
+        "qwen/qwen3.6-27b",     # Highly balanced reasoning model
+    ],
+    index=0,
+)
     
     temperature = st.slider("Creativity (temperature)", 0.0, 1.5, 0.8, 0.1)
     
