@@ -1,5 +1,3 @@
-
-
 import os
 import json
 import streamlit as st
@@ -18,7 +16,7 @@ st.title("LIF.ai ")
 st.caption("Powered by LangChain + Groq — turn a rough idea into a polished LinkedIn post, Instagram and facebook in seconds.")
 
 # ---------------------------------------------------------------------------
-# API key handling
+# API key handling & Settings (Indentation Error Fixed Here)
 # ---------------------------------------------------------------------------
 with st.sidebar:
     st.header("Settings")
@@ -27,15 +25,23 @@ with st.sidebar:
         "Groq API Key",
         value=os.environ.get("GROQ_API_KEY", ""),
         type="password",
-        help="Get a free key at https://console.groq.com/keys. "
+        help="Get a free key at https://groq.com. "
              "You can also set it as the GROQ_API_KEY environment variable "
              "instead of pasting it here.",
     )
 
-# Line 44 (example)
-model = st.selectbox("Model", ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it"])
-# Line 45
-temperature = st.slider("Creativity (temperature)", 0.0, 1.5, 0.8, 0.1)
+    # Fixed: Placed within the sidebar block and aligned correctly
+    # Fixed: Updated to include current, active production models
+    model = st.selectbox(
+        "Model", 
+        [
+            "openai/gpt-oss-120b", 
+            "openai/gpt-oss-20b", 
+            "qwen/qwen3.6-27b"
+        ]
+    )
+    
+    temperature = st.slider("Creativity (temperature)", 0.0, 1.5, 0.8, 0.1)
 
     st.markdown("---")
     st.caption(
@@ -61,8 +67,6 @@ CATEGORIES = [
     "Product launch",
     "Startup journey update",
     "StoryWritting",
-
-
 ]
 
 TONES = ["Professional", "Casual & friendly", "Inspirational", "Storytelling", "Bold & confident", "Love", "Spirit"]
@@ -80,9 +84,7 @@ LANGUAGES = [
     "Turkish",
     "Indonesia",
     "Russian",
-    "German",
     "Persian",
-
 ]
 
 col1, col2 = st.columns(2)
